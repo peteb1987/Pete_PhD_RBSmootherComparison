@@ -54,8 +54,14 @@ for kk = 2:K
 %     lin_wts = exp(wts); lin_wts = lin_wts/sum(lin_wts);
 %     wts = log(lin_wts);
     
-    % Store
-    pts_array{kk} = pts;
+    % Store current state only
+    bare_pts = pts;
+    for ii = 1:Nf
+        bare_pts(ii).m(:,[1:kk-1,kk+1:end]) = [];
+        bare_pts(ii).P(:,:,[1:kk-1,kk+1:end]) = [];
+        bare_pts(ii).u([1:kk-1,kk+1:end]) = [];
+    end
+    pts_array{kk} = bare_pts;
     wts_array{kk} = wts;
     
     % Resample

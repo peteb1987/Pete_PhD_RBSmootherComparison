@@ -1,21 +1,22 @@
 clup
 dbstop if error
-dbstop if warning
+% dbstop if warning
 
 %% Set-up
 
-batch = true;
+batch = false;
 
 if batch
     test_num = str2double(getenv('SGE_TASK_ID'));
-%     test_num = 1;
+%     test_num = 10;
+    
+    params.d = test_num;
+    params.K = 5000;
 else
     test_num = 1;
-end
-
-if batch
+    
     params.d = test_num;
-    params.K = 1000;
+    params.K = 100;
 end
 
 % Add toolbox folders to path

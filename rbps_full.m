@@ -37,10 +37,10 @@ for ii = 1:Ns
         for jj = 1:Nf
             
             % Nonlinear bit
-            nonlin_prob = log(mvnpdf(pts(ii).u(kk+1), params.alpha*filt_pts_array{kk}(jj).u(kk), params.var_u));
+            nonlin_prob = log_mvnpdf(pts(ii).u(kk+1), params.alpha*filt_pts_array{kk}(jj).u, params.var_u);
             
             % Linear bit
-            lin_prob = log(mvnpdf(filt_pts_array{kk}(jj).m(:,kk), m_bwds, filt_pts_array{kk}(jj).P(:,:,kk)+P_bwds));
+            lin_prob = log_mvnpdf(filt_pts_array{kk}(jj).m, m_bwds, filt_pts_array{kk}(jj).P+P_bwds);
             
             % Calculate sampling weight
             samp_wts(jj) = filt_wts_array{kk}(jj) + lin_prob + nonlin_prob;
@@ -52,7 +52,7 @@ for ii = 1:Ns
         
         % Sample
         ind = randsample(Nf, 1, true, exp(samp_wts));
-        pts(ii).u(kk) = filt_pts_array{kk}(ind).u(kk);
+        pts(ii).u(kk) = filt_pts_array{kk}(ind).u;
         
         % Run the backwards KF update
         [m_bwds, P_bwds] = kf_update(m_bwds, P_bwds, y(kk), params.C, params.var_y);

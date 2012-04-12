@@ -34,13 +34,13 @@ for ii = 1:Ns
         for jj = 1:Nf
             
             % KF prediction
-            [m_pred, P_pred] = kf_predict(filt_pts_array{kk}(jj).m(:,kk), filt_pts_array{kk}(jj).P(:,:,kk), params.A, pts(ii).u(kk+1)^2*params.Q);
+            [m_pred, P_pred] = kf_predict(filt_pts_array{kk}(jj).m, filt_pts_array{kk}(jj).P, params.A, pts(ii).u(kk+1)^2*params.Q);
             
             % Nonlinear bit
-            nonlin_prob = log(mvnpdf(pts(ii).u(kk+1), params.alpha*filt_pts_array{kk}(jj).u(kk), params.var_u));
+            nonlin_prob = log_mvnpdf(pts(ii).u(kk+1), params.alpha*filt_pts_array{kk}(jj).u, params.var_u);
             
             % Linear bit
-            lin_prob = log(mvnpdf(sampled_z(:,kk+1)', m_pred', P_pred));
+            lin_prob = log_mvnpdf(sampled_z(:,kk+1), m_pred, P_pred);
             
             % Calculate sampling weight
             samp_wts(jj) = filt_wts_array{kk}(jj) + lin_prob + nonlin_prob;
@@ -52,13 +52,13 @@ for ii = 1:Ns
         
         % Sample
         ind = randsample(Nf, 1, true, exp(samp_wts));
-        pts(ii).u(kk) = filt_pts_array{kk}(ind).u(kk);
+        pts(ii).u(kk) = filt_pts_array{kk}(ind).u;
         
         % KF smoothing
-        [m_pred, P_pred] = kf_predict(filt_pts_array{kk}(ind).m(:,kk), filt_pts_array{kk}(ind).P(:,:,kk), params.A, pts(ii).u(kk+1)^2*params.Q);
-        Gain = filt_pts_array{kk}(ind).P(:,:,kk) * params.A' / P_pred;
-        m_bwds = filt_pts_array{kk}(ind).m(:,kk) + Gain * (m_bwds - m_pred);
-        P_bwds = filt_pts_array{kk}(ind).P(:,:,kk) + Gain * (P_bwds - P_pred) * Gain';
+        [m_pred, P_pred] = kf_predict(filt_pts_array{kk}(ind).m, filt_pts_array{kk}(ind).P, params.A, pts(ii).u(kk+1)^2*params.Q);
+        Gain = filt_pts_array{kk}(ind).P * params.A' / P_pred;
+        m_bwds = filt_pts_array{kk}(ind).m + Gain * (m_bwds - m_pred);
+        P_bwds = filt_pts_array{kk}(ind).P + Gain * (P_bwds - P_pred) * Gain';
         P_bwds = (P_bwds+P_bwds')/2;
         assert(isposdef(P_bwds))
         

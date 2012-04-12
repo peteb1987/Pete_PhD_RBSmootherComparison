@@ -25,4 +25,4 @@ params.C = [1, zeros(1,d-1)];
 
 % Algorithms
 params.Nf = 100;
-params.Ns = 100;
+params.Ns = 10;

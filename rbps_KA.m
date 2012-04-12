@@ -28,7 +28,7 @@ for ii = 1:Ns
         for jj = 1:Nf
             
             % Nonlinear bit
-            nonlin_prob = log(mvnpdf(pts(ii).u(kk+1), params.alpha*filt_pts_array{kk}(jj).u(kk), params.var_u));
+            nonlin_prob = log_mvnpdf(pts(ii).u(kk+1), params.alpha*filt_pts_array{kk}(jj).u, params.var_u);
 
             % Calculate sampling weight
             samp_wts(jj) = filt_wts_array{kk}(jj) + nonlin_prob;
@@ -40,7 +40,7 @@ for ii = 1:Ns
         
         % Sample
         ind = randsample(Nf, 1, true, exp(samp_wts));
-        pts(ii).u(kk) = filt_pts_array{kk}(ind).u(kk);
+        pts(ii).u(kk) = filt_pts_array{kk}(ind).u;
         
     end
     
