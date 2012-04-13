@@ -12,11 +12,17 @@ if batch
     
     params.d = test_num;
     params.K = 5000;
+    params.Nf = 10;
+    params.Ns = 10;
+
 else
     test_num = 1;
     
     params.d = test_num;
-    params.K = 100;
+    params.K = 5000;
+    params.Nf = 10;
+    params.Ns = 10;
+
 end
 
 % Add toolbox folders to path

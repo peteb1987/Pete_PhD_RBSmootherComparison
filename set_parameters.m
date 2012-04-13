@@ -24,5 +24,5 @@ params.invQ = params.A\params.Q/params.A';
 params.C = [1, zeros(1,d-1)];
 
 % Algorithms
-params.Nf = 100;
-params.Ns = 10;
+% params.Nf = 100;
+% params.Ns = 100;
